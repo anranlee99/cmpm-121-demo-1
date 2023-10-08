@@ -17,6 +17,8 @@ app.append(gameDiv);
 
 const scoreDisplay: HTMLDivElement = document.createElement("div");
 scoreDisplay.id = "scoreDisplay";
+scoreDisplay.innerHTML = "Score: 0<br><br>";
+scoreDisplay.style.textAlign = "center";
 gameDiv.append(scoreDisplay);
 
 // adds first button
@@ -24,3 +26,9 @@ const bookButton: HTMLButtonElement = document.createElement("button");
 bookButton.innerHTML = "📖";
 bookButton.id = "bookButton";
 gameDiv.append(bookButton);
+
+let score = 0;
+bookButton.addEventListener("click", () => {
+  score++;
+  scoreDisplay.innerHTML = `Score: ${score}<br><br>`;
+});
