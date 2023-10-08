@@ -27,8 +27,28 @@ bookButton.innerHTML = "📖";
 bookButton.id = "bookButton";
 gameDiv.append(bookButton);
 
+// score management;
 let score = 0;
+function incrementScore(val: number = 1) {
+    score+= val;
+    scoreDisplay.innerHTML = `Score: ${score.toFixed(2)}<br><br>`;
+
+}
+
 bookButton.addEventListener("click", () => {
-  score++;
-  scoreDisplay.innerHTML = `Score: ${score}<br><br>`;
+    incrementScore();
 });
+
+let start = Date.now();
+function continuousGrowth() {
+    //every 1/60th of a second, add 1 to the score
+    if(Date.now() - start > 1/60 * 1000) {
+        incrementScore(1/60);
+        window.requestAnimationFrame(continuousGrowth);
+        start = Date.now();
+    } else {
+        window.requestAnimationFrame(continuousGrowth);
+    }
+
+}
+window.requestAnimationFrame(continuousGrowth);
