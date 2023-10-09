@@ -74,14 +74,12 @@ class Upgrade {
     this.growthRate = growthRate;
     this.button = document.createElement("button");
     this.button.innerHTML = `${this.text}<br>(${this.cost})`;
-    this.button.addEventListener("click", () => {
-      score -= this.cost;
-      this.purchase();
-      globalRate.setRate();
-      this.cost *= 1.15; //cost = cost * e^(0.0716 * n-1)
-    });
+    this.button.addEventListener("click", this.purchase.bind(this));
   }
   purchase(): void {
+    score -= this.cost;
+    globalRate.setRate();
+    this.cost *= 1.15; //cost = cost * e^(0.0716 * n-1)
     this.amount++;
   }
 }
@@ -93,19 +91,19 @@ window.requestAnimationFrame(continuousGrowth);
 // check if the buttons should be displayed
 upgradeButtons.forEach((button) => {
   gameDiv.append(button.button);
-  button.button.hidden = true;
+  button.button.disabled = true;
 });
 function checkShowUpgrades(): void {
   upgradeButtons.forEach((button) => {
     if (score >= button.cost) {
-      button.button.hidden = false;
+      button.button.disabled = false;
       button.button.innerHTML = `${button.text}<br>(${button.cost.toFixed(
         2,
       )})<br> Owned:${button.amount} @ ${(
         button.growthRate * button.amount
       ).toFixed(2)}/s`;
     } else {
-      button.button.hidden = true;
+      button.button.disabled = true;
     }
   });
   window.requestAnimationFrame(checkShowUpgrades);
