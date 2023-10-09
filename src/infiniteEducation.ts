@@ -79,7 +79,7 @@ class Upgrade {
   purchase(): void {
     score -= this.cost;
     globalRate.setRate();
-    this.cost *= 1.15; //cost = cost * e^(0.0716 * n-1)
+    this.cost *= 1.15;
     this.amount++;
   }
 }
