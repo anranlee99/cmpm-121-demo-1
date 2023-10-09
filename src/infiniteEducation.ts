@@ -78,6 +78,7 @@ class Upgrade {
       score -= this.cost;
       this.purchase();
       globalRate.setRate();
+      this.cost *= 1.15; //cost = cost * e^(0.0716 * n-1)
     });
   }
   purchase(): void {
@@ -98,9 +99,11 @@ function checkShowUpgrades(): void {
   upgradeButtons.forEach((button) => {
     if (score >= button.cost) {
       button.button.hidden = false;
-      button.button.innerHTML = `${button.text}<br>(${button.cost})<br> Owned:${
-        button.amount
-      } @ ${button.growthRate * button.amount}/s`;
+      button.button.innerHTML = `${button.text}<br>(${button.cost.toFixed(
+        2,
+      )})<br> Owned:${button.amount} @ ${(
+        button.growthRate * button.amount
+      ).toFixed(2)}/s`;
     } else {
       button.button.hidden = true;
     }
