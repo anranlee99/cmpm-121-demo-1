@@ -30,25 +30,78 @@ gameDiv.append(bookButton);
 // score management;
 let score = 0;
 function incrementScore(val: number = 1) {
-    score+= val;
-    scoreDisplay.innerHTML = `Score: ${score.toFixed(2)}<br><br>`;
-
+  score += val;
+  scoreDisplay.innerHTML = `Score: ${score.toFixed(2)}<br><br>`;
 }
 
 bookButton.addEventListener("click", () => {
-    incrementScore();
+  incrementScore();
 });
 
 let start = Date.now();
-function continuousGrowth() {
-    //every 1/60th of a second, add 1 to the score
-    if(Date.now() - start > 1/60 * 1000) {
-        incrementScore(1/60);
-        window.requestAnimationFrame(continuousGrowth);
-        start = Date.now();
-    } else {
-        window.requestAnimationFrame(continuousGrowth);
-    }
 
+function continuousGrowth() {
+  //every 1/60th of a second, add 1 to the score
+  if (Date.now() - start > (1 / 60) * 1000) {
+    incrementScore(globalRate.rate);
+    window.requestAnimationFrame(continuousGrowth);
+    start = Date.now();
+  } else {
+    window.requestAnimationFrame(continuousGrowth);
+  }
 }
+
+const upgradeButtons: Upgrade[] = [];
+const globalRate = {
+    rate: 0,
+    setRate() {
+        const rateArr = upgradeButtons.map((button) => {
+            return button.amount * button.growthRate;
+        });
+        this.rate = rateArr.reduce((a, b) => a + b);
+    }
+}
+class Upgrade {
+    public text: string;
+    public cost: number;
+    public growthRate: number;
+    public amount: number;
+    public button: HTMLButtonElement;
+    constructor(text: string, cost: number, growthRate: number) {
+        this.text = text;
+        this.cost = cost;
+        this.amount = 0;
+        this.growthRate = growthRate;
+        this.button = document.createElement("button");
+        this.button.innerHTML = `${this.text}<br>(${this.cost})`;
+        this.button.addEventListener("click", () => {
+            score -= this.cost;
+            this.purchase();
+            globalRate.setRate();
+        });
+    }
+    purchase(): void{
+        this.amount++;
+    }
+}
+upgradeButtons.push(new Upgrade("YouTube", 10, 1/60));
+upgradeButtons.push(new Upgrade("Library", 100, 10/60));
+upgradeButtons.push(new Upgrade("School", 1000, 100/60));
 window.requestAnimationFrame(continuousGrowth);
+
+// check if the buttons should be displayed
+upgradeButtons.forEach((button) => {
+    gameDiv.append(button.button);
+    button.button.hidden = true;
+});
+function checkShowUpgrades(): void {
+    upgradeButtons.forEach((button) => {
+        if (score >= button.cost) {
+            button.button.hidden = false;
+        } else {
+            button.button.hidden = true;
+        }
+    });
+    window.requestAnimationFrame(checkShowUpgrades);
+}
+window.requestAnimationFrame(checkShowUpgrades);
