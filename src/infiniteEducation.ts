@@ -53,55 +53,58 @@ function continuousGrowth() {
 
 const upgradeButtons: Upgrade[] = [];
 const globalRate = {
-    rate: 0,
-    setRate() {
-        const rateArr = upgradeButtons.map((button) => {
-            return button.amount * button.growthRate;
-        });
-        this.rate = rateArr.reduce((a, b) => a + b);
-    }
-}
+  rate: 0,
+  setRate() {
+    const rateArr = upgradeButtons.map((button) => {
+      return button.amount * button.growthRate;
+    });
+    this.rate = rateArr.reduce((a, b) => a + b);
+  },
+};
 class Upgrade {
-    public text: string;
-    public cost: number;
-    public growthRate: number;
-    public amount: number;
-    public button: HTMLButtonElement;
-    constructor(text: string, cost: number, growthRate: number) {
-        this.text = text;
-        this.cost = cost;
-        this.amount = 0;
-        this.growthRate = growthRate;
-        this.button = document.createElement("button");
-        this.button.innerHTML = `${this.text}<br>(${this.cost})`;
-        this.button.addEventListener("click", () => {
-            score -= this.cost;
-            this.purchase();
-            globalRate.setRate();
-        });
-    }
-    purchase(): void{
-        this.amount++;
-    }
+  public text: string;
+  public cost: number;
+  public growthRate: number;
+  public amount: number;
+  public button: HTMLButtonElement;
+  constructor(text: string, cost: number, growthRate: number) {
+    this.text = text;
+    this.cost = cost;
+    this.amount = 0;
+    this.growthRate = growthRate;
+    this.button = document.createElement("button");
+    this.button.innerHTML = `${this.text}<br>(${this.cost})`;
+    this.button.addEventListener("click", () => {
+      score -= this.cost;
+      this.purchase();
+      globalRate.setRate();
+    });
+  }
+  purchase(): void {
+    this.amount++;
+  }
 }
-upgradeButtons.push(new Upgrade("YouTube", 10, 1/60));
-upgradeButtons.push(new Upgrade("Library", 100, 10/60));
-upgradeButtons.push(new Upgrade("School", 1000, 100/60));
+upgradeButtons.push(new Upgrade("YouTube", 10, 0.1));
+upgradeButtons.push(new Upgrade("Library", 100, 2.0));
+upgradeButtons.push(new Upgrade("School", 1000, 50));
 window.requestAnimationFrame(continuousGrowth);
 
 // check if the buttons should be displayed
 upgradeButtons.forEach((button) => {
-    gameDiv.append(button.button);
-    button.button.hidden = true;
+  gameDiv.append(button.button);
+  button.button.hidden = true;
 });
 function checkShowUpgrades(): void {
-    upgradeButtons.forEach((button) => {
-        if (score >= button.cost) {
-            button.button.hidden = false;
-        } else {
-            button.button.hidden = true;
-        }
-    });
-    window.requestAnimationFrame(checkShowUpgrades);
+  upgradeButtons.forEach((button) => {
+    if (score >= button.cost) {
+      button.button.hidden = false;
+      button.button.innerHTML = `${button.text}<br>(${button.cost})<br> Owned:${
+        button.amount
+      } @ ${button.growthRate * button.amount}/s`;
+    } else {
+      button.button.hidden = true;
+    }
+  });
+  window.requestAnimationFrame(checkShowUpgrades);
 }
 window.requestAnimationFrame(checkShowUpgrades);
