@@ -65,6 +65,7 @@ class Upgrade {
   public growthRate: number;
   public amount: number;
   public button: HTMLButtonElement;
+
   constructor(text: string, cost: number, growthRate: number) {
     this.text = text;
     this.cost = cost;
@@ -79,6 +80,7 @@ class Upgrade {
     this.button.addEventListener("click", this.purchase.bind(this));
     this.button.style.width = "250px";
   }
+
   purchase(): void {
     score -= this.cost;
     this.cost *= 1.15;
@@ -86,10 +88,12 @@ class Upgrade {
     globalRate.setRate();
   }
 }
+
 upgradeButtons.push(new Upgrade("YouTube Tutorials", 10, 0.1));
 upgradeButtons.push(new Upgrade("Library", 100, 2.0));
 upgradeButtons.push(new Upgrade("School", 1000, 50));
 upgradeButtons.push(new Upgrade("Pay for Research", 10000, 100));
+
 window.requestAnimationFrame(continuousGrowth);
 
 // check if the buttons should be displayed
