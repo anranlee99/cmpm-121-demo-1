@@ -10,28 +10,26 @@ const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
-// adds game container
-const gameDiv: HTMLDivElement = document.createElement("div");
-gameDiv.id = "gameContainer";
-app.append(gameDiv);
-
-const scoreDisplay: HTMLDivElement = document.createElement("div");
+const scoreDisplay: HTMLDivElement = document.createElement("h2");
 scoreDisplay.id = "scoreDisplay";
-scoreDisplay.innerHTML = "Score: 0<br><br>";
+scoreDisplay.innerHTML = "Knowledge: 0<br><br>";
 scoreDisplay.style.textAlign = "center";
-gameDiv.append(scoreDisplay);
+app.append(scoreDisplay);
 
 // adds first button
 const bookButton: HTMLButtonElement = document.createElement("button");
 bookButton.innerHTML = "📖";
+bookButton.style.fontSize = "100px";
 bookButton.id = "bookButton";
-gameDiv.append(bookButton);
+bookButton.style.width = "500px";
+bookButton.style.height = "200px";
+app.append(bookButton);
 
 // score management;
 let score = 0;
 function incrementScore(val: number = 1) {
   score += val;
-  scoreDisplay.innerHTML = `Score: ${score.toFixed(2)}<br><br>`;
+  scoreDisplay.innerHTML = `Knowledge: ${score.toFixed(2)}<br><br>`;
 }
 
 bookButton.addEventListener("click", () => {
@@ -73,24 +71,30 @@ class Upgrade {
     this.amount = 0;
     this.growthRate = growthRate;
     this.button = document.createElement("button");
-    this.button.innerHTML = `${this.text}<br>(${this.cost})`;
+    this.button.innerHTML = `${this.text}<br>(${this.cost.toFixed(
+      2,
+    )})<br> Owned:${this.amount} @ ${(this.growthRate * this.amount).toFixed(
+      2,
+    )}/s`;
     this.button.addEventListener("click", this.purchase.bind(this));
+    this.button.style.width = "250px";
   }
   purchase(): void {
     score -= this.cost;
-    globalRate.setRate();
     this.cost *= 1.15;
     this.amount++;
+    globalRate.setRate();
   }
 }
-upgradeButtons.push(new Upgrade("YouTube", 10, 0.1));
+upgradeButtons.push(new Upgrade("YouTube Tutorials", 10, 0.1));
 upgradeButtons.push(new Upgrade("Library", 100, 2.0));
 upgradeButtons.push(new Upgrade("School", 1000, 50));
+upgradeButtons.push(new Upgrade("Pay for Research", 10000, 100));
 window.requestAnimationFrame(continuousGrowth);
 
 // check if the buttons should be displayed
 upgradeButtons.forEach((button) => {
-  gameDiv.append(button.button);
+  app.append(button.button);
   button.button.disabled = true;
 });
 function checkShowUpgrades(): void {
@@ -99,7 +103,7 @@ function checkShowUpgrades(): void {
       button.button.disabled = false;
       button.button.innerHTML = `${button.text}<br>(${button.cost.toFixed(
         2,
-      )})<br> Owned:${button.amount} @ ${(
+      )})<br>Owned:${button.amount} @ ${(
         button.growthRate * button.amount
       ).toFixed(2)}/s`;
     } else {
