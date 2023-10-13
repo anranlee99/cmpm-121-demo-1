@@ -36,20 +36,6 @@ bookButton.addEventListener("click", () => {
   incrementScore();
 });
 
-let start = Date.now();
-
-function continuousGrowth() {
-  //every 1/60th of a second, add 1 to the score
-  if (Date.now() - start > (1 / 60) * 1000) {
-    incrementScore(globalRate.rate);
-    window.requestAnimationFrame(continuousGrowth);
-    start = Date.now();
-  } else {
-    window.requestAnimationFrame(continuousGrowth);
-  }
-}
-
-const upgradeButtons: Upgrade[] = [];
 const globalRate = {
   rate: 0,
   setRate() {
@@ -71,13 +57,15 @@ class Upgrade {
     this.amount = 0;
     this.growthRate = growthRate;
     this.button = document.createElement("button");
+    this.button.style.width = "250px";
+
     this.button.innerHTML = `${this.text}<br>(${this.cost.toFixed(
       2,
     )})<br> Owned:${this.amount} @ ${(this.growthRate * this.amount).toFixed(
       2,
     )}/s`;
+
     this.button.addEventListener("click", this.purchase.bind(this));
-    this.button.style.width = "250px";
   }
   purchase(): void {
     score -= this.cost;
@@ -86,10 +74,24 @@ class Upgrade {
     globalRate.setRate();
   }
 }
-upgradeButtons.push(new Upgrade("YouTube Tutorials", 10, 0.1));
-upgradeButtons.push(new Upgrade("Library", 100, 2.0));
-upgradeButtons.push(new Upgrade("School", 1000, 50));
-upgradeButtons.push(new Upgrade("Pay for Research", 10000, 100));
+const upgradeButtons: Upgrade[] = [
+  new Upgrade("YouTube Tutorials", 10, 0.1),
+  new Upgrade("Library", 100, 2.0),
+  new Upgrade("School", 1000, 50),
+  new Upgrade("Pay for Research", 10000, 100),
+];
+
+let start = Date.now();
+function continuousGrowth() {
+  //every 1/60th of a second, add 1 to the score
+  if (Date.now() - start > (1 / 60) * 1000) {
+    incrementScore(globalRate.rate);
+    window.requestAnimationFrame(continuousGrowth);
+    start = Date.now();
+  } else {
+    window.requestAnimationFrame(continuousGrowth);
+  }
+}
 window.requestAnimationFrame(continuousGrowth);
 
 // check if the buttons should be displayed
