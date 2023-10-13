@@ -51,13 +51,21 @@ class Upgrade {
   public growthRate: number;
   public amount: number;
   public button: HTMLButtonElement;
-  constructor(text: string, cost: number, growthRate: number) {
+  public description: string;
+  private tooltip: HTMLDivElement;
+  constructor(
+    text: string,
+    cost: number,
+    growthRate: number,
+    description: string,
+  ) {
     this.text = text;
     this.cost = cost;
     this.amount = 0;
     this.growthRate = growthRate;
     this.button = document.createElement("button");
     this.button.style.width = "250px";
+    this.description = description;
 
     this.button.innerHTML = `${this.text}<br>(${this.cost.toFixed(
       2,
@@ -66,6 +74,13 @@ class Upgrade {
     )}/s`;
 
     this.button.addEventListener("click", this.purchase.bind(this));
+    this.tooltip = document.createElement("div");
+    this.tooltip.classList.add("tooltip");
+    this.tooltip.textContent = this.description;
+
+    // Add an event listener for mouseover and mouseout to show/hide the tooltip
+    this.button.addEventListener("mouseover", this.showTooltip.bind(this));
+    this.button.addEventListener("mouseout", this.hideTooltip.bind(this));
   }
   purchase(): void {
     score -= this.cost;
@@ -73,12 +88,54 @@ class Upgrade {
     this.amount++;
     globalRate.setRate();
   }
+  showTooltip(event: MouseEvent): void {
+    const tooltipOffset = 10; // Adjust this value as needed for positioning
+
+    this.tooltip.style.left = `${event.clientX + tooltipOffset}px`;
+    this.tooltip.style.top = `${event.clientY + tooltipOffset}px`;
+
+    document.body.appendChild(this.tooltip);
+  }
+
+  // Method to hide the tooltip
+  hideTooltip(): void {
+    if (this.tooltip.parentElement) {
+      this.tooltip.parentElement.removeChild(this.tooltip);
+    }
+  }
 }
 const upgradeButtons: Upgrade[] = [
-  new Upgrade("YouTube Tutorials", 10, 0.1),
-  new Upgrade("Library", 100, 2.0),
-  new Upgrade("School", 1000, 50),
-  new Upgrade("Pay for Research", 10000, 100),
+  new Upgrade(
+    "YouTube Tutorials",
+    10,
+    0.1,
+    "Self learning is often the best start to a new skill",
+  ),
+  new Upgrade(
+    "Library",
+    100,
+    2.0,
+    "Books and free resources at the library help you expand your horizons",
+  ),
+  new Upgrade("School", 1000, 50, "Time for a more structured understanding"),
+  new Upgrade(
+    "Pay for Research",
+    10000,
+    100,
+    "You've got to find new knowledge when it's not available",
+  ),
+  new Upgrade(
+    "Neuro Enhancements",
+    100000,
+    500,
+    "Limitations of the human brain are no longer a problem",
+  ),
+  new Upgrade(
+    "Simulate Universes",
+    1000000,
+    1000,
+    "You can now learn about what was previously inaccessible",
+  ),
 ];
 
 let start = Date.now();

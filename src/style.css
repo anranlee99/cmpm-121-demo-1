@@ -86,3 +86,14 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+.tooltip {
+  position: absolute;
+  z-index: 9999;
+  background: #000;
+  color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 14px;
+  pointer-events: none;
+  white-space: nowrap;
+}
