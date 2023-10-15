@@ -42,7 +42,7 @@ const globalRate = {
     const rateArr = upgradeButtons.map((button) => {
       return button.amount * button.growthRate;
     });
-    this.rate = rateArr.reduce((a, b) => a + b);
+    this.rate = rateArr.reduce((a, b) => a + b) / 60;
   },
 };
 class Upgrade {
@@ -108,7 +108,7 @@ const upgradeButtons: Upgrade[] = [
   new Upgrade(
     "YouTube Tutorials",
     10,
-    0.1,
+    1.0,
     "Self learning is often the best start to a new skill",
   ),
   new Upgrade(
@@ -140,7 +140,6 @@ const upgradeButtons: Upgrade[] = [
 
 let start = Date.now();
 function continuousGrowth() {
-  //every 1/60th of a second, add 1 to the score
   if (Date.now() - start > (1 / 60) * 1000) {
     incrementScore(globalRate.rate);
     window.requestAnimationFrame(continuousGrowth);
