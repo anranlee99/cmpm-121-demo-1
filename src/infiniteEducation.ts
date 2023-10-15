@@ -42,7 +42,7 @@ const globalRate = {
     const rateArr = upgradeButtons.map((button) => {
       return button.amount * button.growthRate;
     });
-    this.rate = rateArr.reduce((a, b) => a + b) / 60;
+    this.rate = rateArr.reduce((a, b) => a + b);
   },
 };
 class Upgrade {
@@ -140,13 +140,11 @@ const upgradeButtons: Upgrade[] = [
 
 let start = Date.now();
 function continuousGrowth() {
-  if (Date.now() - start > (1 / 60) * 1000) {
-    incrementScore(globalRate.rate);
-    window.requestAnimationFrame(continuousGrowth);
-    start = Date.now();
-  } else {
-    window.requestAnimationFrame(continuousGrowth);
-  }
+  const elapsed: number = Date.now() - start; // milliseconds
+  incrementScore(globalRate.rate * (elapsed / 1000));
+  start = Date.now();
+
+  window.requestAnimationFrame(continuousGrowth);
 }
 window.requestAnimationFrame(continuousGrowth);
 
